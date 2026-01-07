@@ -268,7 +268,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 void rgb_matrix_update_pwm_buffers(void);
 #endif
 
-const uint16_t PROGMEM colemak_combo[] = {KC_Q, KC_SMCL, COMBO_END};
+const uint16_t PROGMEM colemak_combo[] = {KC_Q, KC_SCLN, COMBO_END};
 const uint16_t PROGMEM qwerty_combo[] = {KC_Q, KC_P, COMBO_END};
 combo_t key_combos[] = {
     COMBO(colemak_combo, DF(LAYER_COLEMAK)),
