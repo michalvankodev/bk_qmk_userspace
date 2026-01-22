@@ -18,7 +18,7 @@
 
 #ifdef VIA_ENABLE
 /* VIA configuration. */
-#    define DYNAMIC_KEYMAP_LAYER_COUNT 8
+#    define DYNAMIC_KEYMAP_LAYER_COUNT 11
 #endif // VIA_ENABLE
 
 #ifndef __arm__

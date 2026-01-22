@@ -29,6 +29,9 @@ enum charybdis_keymap_layers {
     LAYER_POINTER,
     LAYER_NUMERAL,
     LAYER_SYMBOLS,
+    LAYER_GAMEPAD_BASE,
+    LAYER_GAMEPAD_L1,
+    LAYER_GAMEPAD_L2
 };
 
 // Automatically enable sniping-mode on the pointer layer.
@@ -69,7 +72,7 @@ static uint16_t auto_pointer_layer_timer = 0;
                       ESC_MED, SPC_NAV, TAB_FUN, ENT_SYM, BSP_NUM
 
 /** Convenience row shorthands. */
-#define _______________DEAD_HALF_ROW_______________ XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
+#define _______________DEAD_HALF_ROW_______________ XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TG(LAYER_GAMEPAD_BASE)
 #define ______________HOME_ROW_GACS_L______________ KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX
 #define ______________HOME_ROW_GACS_R______________ XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI
 
@@ -211,6 +214,33 @@ static uint16_t auto_pointer_layer_timer = 0;
 
 #define LAYOUT_wrapper(...) LAYOUT(__VA_ARGS__)
 
+// clang-format off
+/** \brief Gamepad layout (3 rows, 10 columns).
+    I want to be able to play games with this keyboard and therefore,
+    I was thinking I can make a layout which doesn't rely on home row mods,
+    Uses the left part for great efficiency for gaming
+    Enable as a combo / layout switch on the right side of keyboard to toggle back and forth
+    Uses left and right thumb to switch to differnt layers.
+    ALT, SHIFT, CTRL as part of the main layout
+ */
+#define LAYOUT_LAYER_GAMEPAD_BASE                                                                     \
+       KC_LALT,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P, \
+       KC_LSFT,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L, KC_SEMICOLON, \
+       KC_LCTL,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, \
+                      MO(LAYER_GAMEPAD_L1), SPC_NAV, MO(LAYER_GAMEPAD_L2), ENT_SYM, BSP_NUM
+
+#define LAYOUT_LAYER_GAMEPAD_L1                                                                     \
+       KC_TRNS,    KC_7,    KC_TRNS,    KC_9,    KC_ESC,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P, \
+       KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TAB,    KC_H,    KC_J,    KC_K,    KC_L, KC_SEMICOLON, \
+       KC_TRNS,    KC_1,    KC_2,    KC_3,    KC_0,    KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, \
+                      MO(LAYER_GAMEPAD_L1), SPC_NAV, MO(LAYER_GAMEPAD_L2), ENT_SYM, BSP_NUM
+
+#define LAYOUT_LAYER_GAMEPAD_L2                                                                     \
+       KC_TRNS,    KC_F7,    KC_TRNS,    KC_F9,    KC_ESC,    KC_Y,    KC_U,    KC_I,    KC_O,    TG(LAYER_GAMEPAD_BASE), \
+       KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TAB,    KC_H,    KC_J,    KC_K,    KC_L, KC_SEMICOLON, \
+       KC_TRNS,    KC_F1,    KC_F2,    KC_F3,    KC_0,    KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, \
+                      MO(LAYER_GAMEPAD_L1), SPC_NAV, MO(LAYER_GAMEPAD_L2), ENT_SYM, MO(LAYER_GAMEPAD_L2)
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [LAYER_BASE] = LAYOUT_wrapper(
     POINTER_MOD(HOME_ROW_MOD_GACS(LAYOUT_LAYER_BASE))
@@ -224,6 +254,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [LAYER_NUMERAL] = LAYOUT_wrapper(LAYOUT_LAYER_NUMERAL),
   [LAYER_POINTER] = LAYOUT_wrapper(LAYOUT_LAYER_POINTER),
   [LAYER_SYMBOLS] = LAYOUT_wrapper(LAYOUT_LAYER_SYMBOLS),
+  [LAYER_GAMEPAD_BASE] = LAYOUT_wrapper(LAYOUT_LAYER_GAMEPAD_BASE),
+  [LAYER_GAMEPAD_L1] = LAYOUT_wrapper(LAYOUT_LAYER_GAMEPAD_L1),
+  [LAYER_GAMEPAD_L2] = LAYOUT_wrapper(LAYOUT_LAYER_GAMEPAD_L2),
 };
 // clang-format on
 
