@@ -53,6 +53,6 @@ qmk flash -kb bastardkb/charybdis/3x5/splinktegrated_rev1 -km michalvanko   # BO
 
 - `qmk.json` — build targets; new keymaps must be registered here or CI won't build them.
 - `.github/workflows/build_binaries.yaml` — on push: builds via `qmk/.github` reusable workflow against `bastardkb/bastardkb-qmk@main`, publishes UF2s as a release artifact (`contents: write`).
-- `keyboards/.../michalvanko/TODO.md` — Michal's note on a QUICK_TAP_TERM tap-hold bug (num layer after backspace tap) with the intended `config.h` fix, not yet applied.
+- `keyboards/.../michalvanko/config.h` — `QUICK_TAP_TERM 0` fixes the tap-hold bug where the numeral layer wouldn't re-engage after a backspace tap (was TODO.md, now applied; verify after flashing: hold BSP_NUM → type digits → tap backspace → hold again → digits, not base-layer letters).
 - `.clang-format`, `.editorconfig`, `.clangd`; `.gitignore` excludes firmware outputs (`*.hex`, `*.bin`, `*.uf2` — build products land in `.build/` and repo root on compile).
 - `LICENSE` — GPLv2.
