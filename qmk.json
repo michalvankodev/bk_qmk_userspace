@@ -64,7 +64,7 @@
     ],
     "build_targets": [
         [
-            "bastardkb/charybdis/3x5",
+            "bastardkb/charybdis/3x5/splinktegrated_rev1",
             "michalvanko"
         ]
     ]

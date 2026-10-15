@@ -16,10 +16,6 @@
  */
 #include QMK_KEYBOARD_H
 
-#ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-#    include "timer.h"
-#endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-
 enum charybdis_keymap_layers {
     LAYER_BASE = 0,
     LAYER_COLEMAK,
@@ -34,20 +30,8 @@ enum charybdis_keymap_layers {
     LAYER_GAMEPAD_L2
 };
 
-// Automatically enable sniping-mode on the pointer layer.
-#define CHARYBDIS_AUTO_SNIPING_ON_LAYER LAYER_POINTER
-
-#ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-static uint16_t auto_pointer_layer_timer = 0;
-
-#    ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS
-#        define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS 1000
-#    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS
-
-#    ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD
-#        define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD 8
-#    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD
-#endif     // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
+// Note: sniping/drag-scroll/DPI modes and the auto-mouse layer are now
+// provided by the `bastardkb/bk_pointing_device` module (see keymap.json).
 
 #define ESC_MED LT(LAYER_MEDIA, KC_ESC)
 #define SPC_NAV LT(LAYER_NAVIGATION, KC_SPC)
@@ -115,9 +99,9 @@ static uint16_t auto_pointer_layer_timer = 0;
  * symmetrical to accomodate the left- and right-hand trackball.
  */
 #define LAYOUT_LAYER_MEDIA                                                                    \
-    XXXXXXX,RGB_RMOD, RGB_TOG, RGB_MOD, XXXXXXX, XXXXXXX,RGB_RMOD, RGB_TOG, RGB_MOD, XXXXXXX, \
+    XXXXXXX,RM_PREV, RM_TOGG, RM_NEXT, XXXXXXX, XXXXXXX,RM_PREV, RM_TOGG, RM_NEXT, XXXXXXX, \
     KC_MUTE, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, KC_MUTE, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, \
-    XXXXXXX, XXXXXXX, XXXXXXX,  EE_CLR, QK_BOOT, QK_BOOT,  EE_CLR, XXXXXXX, XXXXXXX, XXXXXXX, \
+    XXXXXXX, XXXXXXX, XXXXXXX,  EE_CLR,    INVY, QK_BOOT,  EE_CLR, XXXXXXX, XXXXXXX, XXXXXXX, \
                       _______, KC_MPLY, KC_MSTP, KC_MSTP, KC_MPLY
 
 /** \brief Mouse emulation and pointer functions. */
@@ -125,7 +109,7 @@ static uint16_t auto_pointer_layer_timer = 0;
     QK_BOOT,  EE_CLR, XXXXXXX, DPI_MOD, S_D_MOD, S_D_MOD, DPI_MOD, XXXXXXX,  EE_CLR, QK_BOOT, \
     ______________HOME_ROW_GACS_L______________, ______________HOME_ROW_GACS_R______________, \
     _______, DRGSCRL, SNIPING, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, SNIPING, DRGSCRL, _______, \
-                      KC_BTN2, KC_BTN1, KC_BTN3, KC_BTN3, KC_BTN1
+                      MS_BTN2, MS_BTN1, MS_BTN3, MS_BTN3, MS_BTN1
 
 /**
  * \brief Navigation layer.
@@ -259,47 +243,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [LAYER_GAMEPAD_L2] = LAYOUT_wrapper(LAYOUT_LAYER_GAMEPAD_L2),
 };
 // clang-format on
-
-#ifdef POINTING_DEVICE_ENABLE
-#    ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-    if (abs(mouse_report.x) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD || abs(mouse_report.y) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD) {
-        if (auto_pointer_layer_timer == 0) {
-            layer_on(LAYER_POINTER);
-#        ifdef RGB_MATRIX_ENABLE
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_NONE);
-            rgb_matrix_sethsv_noeeprom(HSV_GREEN);
-#        endif // RGB_MATRIX_ENABLE
-        }
-        auto_pointer_layer_timer = timer_read();
-    }
-    return mouse_report;
-}
-
-void matrix_scan_user(void) {
-    if (auto_pointer_layer_timer != 0 && TIMER_DIFF_16(timer_read(), auto_pointer_layer_timer) >= CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS) {
-        auto_pointer_layer_timer = 0;
-        layer_off(LAYER_POINTER);
-#        ifdef RGB_MATRIX_ENABLE
-        rgb_matrix_mode_noeeprom(RGB_MATRIX_DEFAULT_MODE);
-#        endif // RGB_MATRIX_ENABLE
-    }
-}
-#    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-
-#    ifdef CHARYBDIS_AUTO_SNIPING_ON_LAYER
-layer_state_t layer_state_set_user(layer_state_t state) {
-    charybdis_set_pointer_sniping_enabled(layer_state_cmp(state, CHARYBDIS_AUTO_SNIPING_ON_LAYER));
-    return state;
-}
-#    endif // CHARYBDIS_AUTO_SNIPING_ON_LAYER
-#endif     // POINTING_DEVICE_ENABLE
-
-#ifdef RGB_MATRIX_ENABLE
-// Forward-declare this helper function since it is defined in
-// rgb_matrix.c.
-void rgb_matrix_update_pwm_buffers(void);
-#endif
 
 const uint16_t PROGMEM colemak_combo[] = {KC_Q, KC_P, COMBO_END};
 const uint16_t PROGMEM qwerty_combo[] = {KC_Q, KC_SCLN, COMBO_END};

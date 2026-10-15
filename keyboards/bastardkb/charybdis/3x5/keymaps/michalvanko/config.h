@@ -16,23 +16,34 @@
  */
 #pragma once
 
-#ifdef VIA_ENABLE
-/* VIA configuration. */
-#    define DYNAMIC_KEYMAP_LAYER_COUNT 11
-#endif // VIA_ENABLE
+/* VIA configuration: 11 layers in this keymap. */
+#define DYNAMIC_KEYMAP_LAYER_COUNT 11
 
 #ifndef __arm__
 /* Disable unused features. */
 #    define NO_ACTION_ONESHOT
 #endif // __arm__
 
-/* Charybdis-specific features. */
+/* Charybdis-specific features.
+ *
+ * Pointer modes (sniping, drag-scroll, DPI, auto-mouse layer) are handled by
+ * the `bastardkb/bk_pointing_device` module — see keymap.json.
+ */
 
-#ifdef POINTING_DEVICE_ENABLE
-// Automatically enable the pointer layer when moving the trackball.  See also:
-// - `CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS`
-// - `CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD`
-// #define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-#endif // POINTING_DEVICE_ENABLE
+/* If the auto-mouse layer ever activates, make it the pointer layer (LAYER_POINTER = 5). */
+#ifdef AUTO_MOUSE_DEFAULT_LAYER
+#    undef AUTO_MOUSE_DEFAULT_LAYER
+#endif
+#define AUTO_MOUSE_DEFAULT_LAYER 5
 
-#define CHARYBDIS_DRAGSCROLL_REVERSE_Y // inverts vertical scrolling
+/* Required by the argos module (18 LEDs per half). */
+#ifdef RGBLIGHT_LED_COUNT
+#    undef RGBLIGHT_LED_COUNT
+#endif
+#define RGBLIGHT_LED_COUNT 36
+
+/* DPI indicator LED index for bk_pointing_device. */
+#ifdef LED_DPI_INDICATOR_INDEX
+#    undef LED_DPI_INDICATOR_INDEX
+#endif
+#define LED_DPI_INDICATOR_INDEX 0
