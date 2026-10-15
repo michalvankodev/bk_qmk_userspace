@@ -15,6 +15,9 @@ jobs:
 
   publish:
     name: 'QMK Userspace Publish'
-    uses: bastardkb/qmk_userspace/.github/workflows/qmk_userspace_publish.yml@main
+    # QMK's standard publish keeps a rolling "latest" release with the UF2s.
+    # BastardKB's own publish workflow (bastardkb/qmk_userspace@main) requires
+    # r<N> release tags which don't exist on this fork, so it fails.
+    uses: qmk/.github/.github/workflows/qmk_userspace_publish.yml@main
     if: always() && !cancelled()
     needs: build

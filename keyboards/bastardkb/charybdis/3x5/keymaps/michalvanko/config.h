@@ -16,6 +16,11 @@
  */
 #pragma once
 
+/* Re-pressing a tap-hold key right after tapping it (e.g. holding BSP_NUM
+ * again right after a backspace tap) must be allowed to trigger the hold,
+ * otherwise the numeral layer never re-engages while correcting numbers. */
+#define QUICK_TAP_TERM 0
+
 /* VIA configuration: 11 layers in this keymap. */
 #define DYNAMIC_KEYMAP_LAYER_COUNT 11
 
