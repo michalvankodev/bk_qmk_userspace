@@ -16,6 +16,10 @@
  */
 #include QMK_KEYBOARD_H
 
+#ifdef COMMUNITY_MODULE_BK_POINTING_DEVICE_ENABLE
+#    include "bk_pointing_device.h"
+#endif // COMMUNITY_MODULE_BK_POINTING_DEVICE_ENABLE
+
 enum charybdis_keymap_layers {
     LAYER_BASE = 0,
     LAYER_COLEMAK,
@@ -250,3 +254,14 @@ combo_t key_combos[] = {
     COMBO(colemak_combo, DF(LAYER_COLEMAK)),
     COMBO(qwerty_combo, DF(LAYER_BASE))
 };
+
+#ifdef COMMUNITY_MODULE_BK_POINTING_DEVICE_ENABLE
+void keyboard_post_init_user(void) {
+    // Auto-sniping while the pointer layer is active: successor of the old
+    // CHARYBDIS_AUTO_SNIPING_ON_LAYER define. The module enables sniping
+    // ("precision") whenever AUTO_MOUSE_DEFAULT_LAYER (= LAYER_POINTER, set in
+    // config.h) is on. Forced on every boot, like the old compiled-in define;
+    // untoggleable at runtime through the Argos web UI only until reboot.
+    bkpd_set_auto_precision_on_mouse_layer_enabled(true);
+}
+#endif // COMMUNITY_MODULE_BK_POINTING_DEVICE_ENABLE
