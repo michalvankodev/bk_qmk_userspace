@@ -13,7 +13,7 @@ QMK **userspace** repo for Bastard Keyboards keymaps (fork of `bastardkb/qmk_use
 ```
 qmk.json                  # build_targets (what CI builds) — michalvanko only
 keyboards/bastardkb/charybdis/3x5/keymaps/michalvanko/
-  keymap.c  config.h  rules.mk  keymap.json  TODO.md
+  keymap.c  config.h  rules.mk  keymap.json
 modules/bastardkb/        # VENDORED copy of Bastardkb/qmk_modules (NOT a submodule)
   argos/                  # + one local patch: layer cap 8→16 (see below)
   bk_pointing_device/     # pointer modes: sniping/drag-scroll/DPI/INVY, auto-mouse
@@ -53,6 +53,8 @@ qmk flash -kb bastardkb/charybdis/3x5/splinktegrated_rev1 -km michalvanko   # BO
 
 - `qmk.json` — build targets; new keymaps must be registered here or CI won't build them.
 - `.github/workflows/build_binaries.yaml` — on push: builds via `qmk/.github` reusable workflow against `bastardkb/bastardkb-qmk@main`, publishes UF2s as a release artifact (`contents: write`).
-- `keyboards/.../michalvanko/config.h` — `QUICK_TAP_TERM 0` fixes the tap-hold bug where the numeral layer wouldn't re-engage after a backspace tap (was TODO.md, now applied; verify after flashing: hold BSP_NUM → type digits → tap backspace → hold again → digits, not base-layer letters).
+- `keymaps/michalvanko/config.h` — `QUICK_TAP_TERM 0` (done — flashed & verified): a tap-hold key re-pressed right after a tap can trigger the hold again, so the numeral layer re-engages after a backspace tap.
+- `keymaps/michalvanko/keymap.c` — pointer behavior: `keyboard_post_init_user` forces the module's auto-precision (sniping) on every boot, active while `AUTO_MOUSE_DEFAULT_LAYER` (= LAYER_POINTER) is held; `INVY` on the media layer toggles Y-axis inversion of the current pointer mode (persisted). Trackball runtime config (per-mode DPI/invert) lives on the device EEPROM — tuned via Argos.
+- Local Argos setup (done): `/etc/udev/rules.d/51-bastardkb.rules` grants HID access for VID a8f8; persistent Chromium profile at `~/.agent-browser-profiles/argos` keeps the WebHID grant. Current device state: drag-scroll Invert Y on (natural scrolling), Normal DPI 700, Precision 500.
 - `.clang-format`, `.editorconfig`, `.clangd`; `.gitignore` excludes firmware outputs (`*.hex`, `*.bin`, `*.uf2` — build products land in `.build/` and repo root on compile).
 - `LICENSE` — GPLv2.
